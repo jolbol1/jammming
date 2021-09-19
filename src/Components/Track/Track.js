@@ -1,4 +1,5 @@
 import React from "react";
+import { Preview } from "../Preview/Preview";
 import "./Track.css";
 
 export class Track extends React.Component {
@@ -7,6 +8,7 @@ export class Track extends React.Component {
     this.renderAction = this.renderAction.bind(this);
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
+    this.handlePreview = this.handlePreview.bind(this);
   }
 
   renderAction() {
@@ -25,12 +27,18 @@ export class Track extends React.Component {
       this.props.onRemove(this.props.track)
   }
 
+  handlePreview(){
+    console.log("Handle")
+    this.props.onPreview(this.props.track)
+  }
+
   render() {
     return (
       <div className="Track">
         <div className="Track-information">
           <h3>{this.props.track.name}</h3>
           <p>{this.props.track.artist} | {this.props.track.album}</p>
+          <Preview previewURL={this.props.track.previewURL} onPreview={this.handlePreview} showPreview={this.props.track.showPreview}/>
         </div>
         {this.renderAction()}
       </div>

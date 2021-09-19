@@ -18,6 +18,7 @@ export class App extends React.Component {
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
     this.savePlaylist = this.savePlaylist.bind(this);
     this.search = this.search.bind(this);
+    this.previewTrack = this.previewTrack.bind(this);
   }
 
   addTrack(track) {
@@ -33,10 +34,14 @@ export class App extends React.Component {
           artist: track.artist,
           album: track.album,
           id: track.id,
-          uri: track.uri
+          uri: track.uri,
+          previewURL: track.previewURL,
+          showPreview: track.showPreview
         },
       ]),
-      searchResults: this.state.searchResults.filter(savedTrack => track.id !== savedTrack.id)
+      searchResults: this.state.searchResults.filter(
+        (savedTrack) => track.id !== savedTrack.id
+      ),
     });
   }
 
@@ -57,6 +62,35 @@ export class App extends React.Component {
     this.setState({
       playlistTracks: playlistTracks,
     });
+  }
+
+  previewTrack(track) {
+    console.log("Click", track)
+    if (
+      this.state.searchResults.find((savedTrack) => savedTrack.id === track.id)
+    ) {
+      let searchResults = this.state.searchResults.map((savedTrack) => {
+        if(savedTrack.id === track.id) {
+          savedTrack.showPreview = !track.showPreview;
+        }
+        return savedTrack;
+      })
+      this.setState({
+        searchResults: searchResults
+      })
+    } else if (
+      this.state.playlistTracks.find((savedTrack) => savedTrack.id === track.id)
+    ) {
+      let playlistTracks = this.state.playlistTracks.map((savedTrack) => {
+        if(savedTrack.id === track.id) {
+          savedTrack.showPreview = !track.showPreview;
+        }
+        return savedTrack;
+      })
+      this.setState({
+        playlistTracks: playlistTracks
+      })
+    }
   }
 
   updatePlaylistName(name) {
@@ -83,6 +117,7 @@ export class App extends React.Component {
             <SearchResults
               searchResults={this.state.searchResults}
               onAdd={this.addTrack}
+              onPreview={this.previewTrack}
             />
             <Playlist
               playlistName={this.state.playlistName}
@@ -90,6 +125,7 @@ export class App extends React.Component {
               onRemove={this.removeTrack}
               onNameChange={this.updatePlaylistName}
               onSave={this.savePlaylist}
+              onPreview={this.previewTrack}
             />
           </div>
         </div>
